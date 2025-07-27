@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import OfficeTaskContainer from "./office-task-container";
 import { useState } from "react";
+import Description from "@/components/description";
 
 interface OfficeTasksProps {
     officeTasks: OfficeTasksType[];
@@ -35,10 +36,10 @@ const OfficeTasks: React.FC<OfficeTasksProps> = ({ officeTasks }) => {
             <section className="flex items-center justify-between">
                 {/* Left  */}
                 <div>
-                    <h2 className="text-lg font-bold"> Office Tasks </h2>
-                    <p className="text-sm text-muted-foreground font-semibold">
+                    <h2> Office Tasks </h2>
+                    <Description>
                         Accomplish all task to clear this office.
-                    </p>
+                    </Description>
                 </div>
                 {/* Right  */}
                 <div>
@@ -72,7 +73,7 @@ const OfficeTasks: React.FC<OfficeTasksProps> = ({ officeTasks }) => {
                     </Select>
                 </div>
             </section>
-            <section className="grid grid-cols-2 grid-rows-1 gap-4">
+            <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {mutableOfficeTasks.map((task) => (
                     <OfficeTaskContainer
                         key={task.id}

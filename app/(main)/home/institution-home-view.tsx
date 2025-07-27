@@ -1,9 +1,14 @@
 import ClearanceProgressSummary from "@/components/clearance-progress-summary";
-import OfficeClearanceStatus from "@/components/office-clearance-status-summary";
+import OfficeClearanceStatus from "@/app/(main)/home/office-clearance-status-summary";
 import StudentInfoSummary from "@/components/student-info-summary";
 import { User } from "lucide-react";
 
-const InstitutionHomeView = () => {
+interface InstitutionHomeViewProps {
+    institutionId: string;
+}
+const InstitutionHomeView : React.FC<InstitutionHomeViewProps> = ({
+    institutionId,
+}) => {
     return (
         <div className="space-y-4">
             {/* Clearance Summary  */}
@@ -29,7 +34,7 @@ const InstitutionHomeView = () => {
             </div>
 
             <StudentInfoSummary />
-            <OfficeClearanceStatus />
+            <OfficeClearanceStatus institutionId={institutionId} />
         </div>
     );
 };

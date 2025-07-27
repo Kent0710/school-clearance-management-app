@@ -8,7 +8,6 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { getSupabaseClaimsAndCheck } from "./auth";
 
-
 /*
     Used for getting the role of the current authenticated user
 */
@@ -64,6 +63,7 @@ export async function checkUserInstitution() {
 
     const userInstitution = account.institution_id;
 
-    if (!userInstitution) return false;
-    return true;
+    if (!userInstitution)
+        return { hasInstitution: false, institutionId: null };
+    return { hasInstitution: true, institutionId: userInstitution };
 }

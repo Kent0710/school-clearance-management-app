@@ -93,9 +93,8 @@ export async function applyAsInstitutionAdmin(
     };
 }
 
-export async function getInstitutionOffices() {
-    const { supabase, account } = await getAccount();
-    const institutionId = account.institution_id;
+export async function getInstitutionOffices(institutionId : string) {
+    const { supabase } = await getSupabaseClaimsAndCheck();
 
     const { data: offices, error: officesError } = await supabase
         .from("office")
@@ -279,7 +278,10 @@ export async function getInstitutionAdmins(institutionId: string) {
         .from("institution_admin")
         .select(
             `
-                account:account_id ( username )
+                account_id,
+                institution_id,
+                account:account_id ( username ),
+                is_super_admin
             `
         )
         .eq("institution_id", institutionId);
@@ -287,19 +289,52 @@ export async function getInstitutionAdmins(institutionId: string) {
     if (error) {
         console.error("Can not get institution admins. ERR: " + error.message);
         return {
-            success : false,
-            error : 'Can not get admins. Please refresh.',
-            admins : [],
-        }
-    };
+            success: false,
+            error: "Can not get admins. Please refresh.",
+            admins: [],
+        };
+    }
 
-    const formattedAdmins = admins.map(a => ({
-        username : a.account.username
-    }))
+    const formattedAdmins = admins.map((a) => ({
+        username: a.account.username,
+        isSuperAdmin: a.is_super_admin,
+        accountId: a.account_id,
+        institutionId: a.institution_id,
+    }));
 
     return {
-        success : true,
-        error : '',
-        admins : formattedAdmins,
+        success: true,
+        error: "",
+        admins: formattedAdmins,
+    };
+}
+
+export async function removeInstitutionAdmin(
+    accountId: string,
+    institutionId: string
+) {
+    const { supabase } = await getSupabaseClaimsAndCheck();
+
+    const { error } = await supabase
+        .from("institution_admin")
+        .delete()
+        .eq("account_id", accountId)
+        .eq("institution_id", institutionId);
+
+    if (error) {
+        console.error(
+            "Failed to remove institution admin. ERR: " + error.message
+        );
+        return {
+            success: false,
+            error: "Failed to remove admin. Please try again.",
+        };
     }
+
+    revalidatePath("/admin/settings/institution/[institutionId]", "page");
+
+    return {
+        success: true,
+        error: "",
+    };
 }

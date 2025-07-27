@@ -6,4 +6,7 @@ export interface AdminApplicantType {
 
 export interface InstitutionAdminsType {
     username : string;
+    isSuperAdmin : boolean;
+    accountId : string;
+    institutionId : string;
 }
